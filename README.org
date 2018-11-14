@@ -12,6 +12,10 @@ As stated above I chose to use Elixir for reasons formerly mentioned. The obviou
 
 However, I felt that this approach defeats the purpose of this test, and surely the implementation will vary from language to language, but picking the language that would lend itself better to a given task was probably not the point. So I decided against said approach.
 *** Building & running
+**** Native
+If you have erlang, or elixir 1.7 installed, you can simply run mix escript.build in the s_expr_calc project directory. This will produce a file `s_expr_calc` that can be run from the command line as follows `./s_expr_calc "ARG"` where arg is the s-expression surrounded by '"', eg. "(add 2 3)", "100", "(add (multiply (multiply 4 2) (add 2 2)) 1)".
+**** Docker
+I have included a `Dockerfile` along with a `build.sh` & `run.sh` that, when run in the order build.sh then `run.sh "ARG"` where ARG is an s-expression surrounded by '"', eg. "(add 2 3)", "100", "(add (multiply (multiply 4 2) (add 2 2)) 1)", will produce the output based on given expression. If you are not in the docker group, you may need to run the commands with sudo.
 ** Assignment
 Write a command line program that acts as a simple calculator: it takes a
 single argument as an expression and prints out the integer result of
