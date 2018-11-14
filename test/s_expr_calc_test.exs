@@ -35,4 +35,56 @@ defmodule SExprCalcTest do
       assert result -- expected == []
     end
   end
+
+  describe "evaluate/1" do
+    test "simple addition" do
+      program = [:+, 2, 2]
+      expected = 4
+      result = SExprCalc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "simple multiplication" do
+      program = [:*, 2, 2]
+      expected = 4
+      result = SExprCalc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "complex addition and multiplication" do
+      program = [:+, 1, :*, :+, 2, 2, :*, 4, 2]
+      expected = 33
+      result = SExprCalc.evaluate(program)
+
+      assert expected == result
+    end
+  end
+
+  describe "calc/1" do
+    test "simple addtion" do
+      program = "(add 2 2)"
+      expected = 4
+      result = SExprCalc.calc(program)
+
+      assert expected == result
+    end
+
+    test "simple multiplication" do
+      program = "(multiply 2 2)"
+      expected = 4
+      result = SExprCalc.calc(program)
+
+      assert expected == result
+    end
+
+    test "complex addition and multiplication" do
+      program = "(add 1 (multiply (add 2 2) (multiply 4 2)))"
+      expected = 33
+      result = SExprCalc.calc(program)
+
+      assert expected == result
+    end
+  end
 end
