@@ -4,7 +4,7 @@ defmodule SExprCalc do
   """
 
   # Take s-expression string, return a list of tokens
-  def create_tokens(program) when is_bitstring(program) do
+  defp create_tokens(program) when is_bitstring(program) do
     program
     |> String.replace(")", "")
     |> String.replace("(", "")
@@ -14,7 +14,7 @@ defmodule SExprCalc do
   end
 
   # Takes a string and returns Float, Integer, or exits with error.
-  def to_number(token) do
+  defp to_number(token) do
     case Integer.parse(token) do
       {n_int, left_over} ->
 	if String.contains?(left_over, ".") do
@@ -29,14 +29,14 @@ defmodule SExprCalc do
   end
 
   # Process list of strings, returning token representation.
-  def symbolize(tokens) when is_list(tokens) and length(tokens) > 1 do
+  defp symbolize(tokens) when is_list(tokens) and length(tokens) > 1 do
     Enum.map(tokens, fn x -> symbolize(x) end)
   end
-  def symbolize(tokens) when is_list(tokens) do # if not given as single string, Elixir will think it is binary
+  defp symbolize(tokens) when is_list(tokens) do # if not given as single string, Elixir will think it is binary
     [x] = tokens
     symbolize(x)
   end
-  def symbolize(token) do
+  defp symbolize(token) do
     cond do
       token == "add" ->
 	:+
@@ -110,10 +110,6 @@ defmodule SExprCalc do
       end)
     evaluate(program)
   end
-  # def evaluate(program) when is_list(program) do
-    # [h|t] = program
-    # h
-  # end
   def evaluate(program), do: program
 
   @doc """
