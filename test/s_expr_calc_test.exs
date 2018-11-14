@@ -3,6 +3,11 @@ defmodule SExprCalcTest do
   doctest SExprCalc
 
   describe "parse/1" do
+    test "single number" do
+      assert SExprCalc.parse("1") == 1
+      assert SExprCalc.parse("100") == 100
+    end
+
     test "simple addition s-expression" do
       program = "(add 1 1)"
       expected = [:+, 1, 1]

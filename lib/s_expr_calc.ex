@@ -4,7 +4,7 @@ defmodule SExprCalc do
   """
 
   # Take s-expression string, return a list of tokens
-  defp create_tokens(program) do
+  def create_tokens(program) when is_bitstring(program) do
     program
     |> String.replace(")", "")
     |> String.replace("(", "")
@@ -14,7 +14,7 @@ defmodule SExprCalc do
   end
 
   # Takes a string and returns Float, Integer, or exits with error.
-  defp to_number(token) do
+  def to_number(token) do
     case Integer.parse(token) do
       {n_int, left_over} ->
 	if String.contains?(left_over, ".") do
@@ -29,9 +29,14 @@ defmodule SExprCalc do
   end
 
   # Process list of strings, returning token representation.
-  defp symbolize(tokens) when is_list(tokens) and length(tokens) > 1, do: Enum.map(tokens, fn x -> symbolize(x) end)
-  defp symbolize(token) when is_list(token), do: symbolize([token])
-  defp symbolize(token) do
+  def symbolize(tokens) when is_list(tokens) and length(tokens) > 1 do
+    Enum.map(tokens, fn x -> symbolize(x) end)
+  end
+  def symbolize(tokens) when is_list(tokens) do # if not given as single string, Elixir will think it is binary
+    [x] = tokens
+    symbolize(x)
+  end
+  def symbolize(token) do
     cond do
       token == "add" ->
 	:+
@@ -47,7 +52,7 @@ defmodule SExprCalc do
 
   ## Examples
 
-      iex> program = "(add (multiply 1 2) (add 2 3))
+      iex> program = "(add (multiply 1 2) (add 2 3))"
       iex> SExprCalc.parse(program)
       [:+, :*, 1, 2, :+, 2, 3]
 
@@ -56,5 +61,74 @@ defmodule SExprCalc do
     program
     |> create_tokens()
     |> symbolize()
+  end
+
+  # Return true if valid operator, false if not.
+  defp is_operator(token) do
+    case token do
+      :+ ->
+	true
+      :* ->
+	true
+      _ ->
+	false
+    end
+  end
+
+  @doc """
+  Evaluate list representation of syntax, and perform calculations as needed, returning result.
+
+  ## Examples
+
+      iex> program = [:+, :*, 2, 2, :+, 1, 1]
+      iex> SExprCalc.evaluate(program)
+      6
+
+  """
+  def evaluate(program) when is_list(program) and length(program) == 3 do
+    [h|t] = program
+    apply(Kernel, h, t)
+  end
+  def evaluate(program) when is_list(program) and length(program) > 2 do
+    program =
+      Enum.reduce_while(Enum.with_index(program), [], fn {x, i}, acc ->
+	if is_operator(x) and i < length(program) -2 do
+	  a = Enum.at(program, i+1)
+	  b = Enum.at(program, i+2)
+	  if is_number(a) and is_number(b) do
+	    lst = List.delete_at(program, i)
+	    |> List.delete_at(i)
+	    |> List.delete_at(i)
+	    |> List.insert_at(i, evaluate([x, a, b]))
+	    {:halt, acc ++ lst}
+	  else
+	    {:cont, acc}
+	  end
+	else
+	  {:cont, acc}
+	end
+      end)
+    evaluate(program)
+  end
+  # def evaluate(program) when is_list(program) do
+    # [h|t] = program
+    # h
+  # end
+  def evaluate(program), do: program
+
+  @doc """
+  Given an S-Expression string, parse and evaluate, return the result.
+
+  ## Examples
+
+      iex> program = "(add (multiply (add 2 2) (multiply 4 2)) 1)"
+      iex> SExprCalc.calc(program)
+      33
+
+  """
+  def calc(program) do
+    program
+    |> parse()
+    |> evaluate()
   end
 end
