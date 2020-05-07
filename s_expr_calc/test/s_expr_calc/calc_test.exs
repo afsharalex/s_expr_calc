@@ -27,6 +27,15 @@ defmodule SExprCalc.CalcTest do
       assert result -- expected == []
     end
 
+    test "simple subtaction s-expression" do
+      program = "(subtract 4 2)"
+      expected = [:-, 4, 2]
+      result = Calc.parse(program)
+
+      assert expected -- result == []
+      assert result -- expected == []
+    end
+
     test "complex addition and multiplication s-expression" do
       program = "(add (add 1 1) (multiply 2 2))"
       expected = [:+, :+, 1, 1, :*, 2, 2]
@@ -48,6 +57,30 @@ defmodule SExprCalc.CalcTest do
 
     test "simple multiplication" do
       program = [:*, 2, 2]
+      expected = 4
+      result = Calc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "simple subtraction" do
+      program = [:-, 4, 2]
+      expected = 2
+      result = Calc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "subtraction leading to negative" do
+      program = [:-, 2, 4]
+      expected = -2
+      result = Calc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "subtraction of zero" do
+      program = [:-, 4, 0]
       expected = 4
       result = Calc.evaluate(program)
 

@@ -3,7 +3,7 @@ defmodule SExprCalc.Calc do
   Heart of S-Expression Calculator.
   """
 
-    ####################
+  ####################
   # HELPER FUNCTIONS #
   ####################
 
@@ -11,14 +11,15 @@ defmodule SExprCalc.Calc do
   defp to_number(token) do
     case Integer.parse(token) do
       {n_int, left_over} ->
-	if String.contains?(left_over, ".") do
-	  {n_flt, _left_over} = Float.parse(token)
-	  n_flt
-	else
-	  n_int
-	end
+        if String.contains?(left_over, ".") do
+          {n_flt, _left_over} = Float.parse(token)
+          n_flt
+        else
+          n_int
+        end
+
       :error ->
-	exit("unexpected token.")
+        exit("unexpected token: '#{token}'.")
     end
   end
 
@@ -26,11 +27,16 @@ defmodule SExprCalc.Calc do
   defp is_operator(token) do
     case token do
       :+ ->
-	true
+        true
+
       :* ->
-	true
+        true
+
+      :- ->
+        true
+
       _ ->
-	false
+        false
     end
   end
 
@@ -48,23 +54,30 @@ defmodule SExprCalc.Calc do
     |> String.split(" ")
   end
 
-
   # Process list of strings, returning token representation.
   defp symbolize(tokens) when is_list(tokens) and length(tokens) > 1 do
     Enum.map(tokens, fn x -> symbolize(x) end)
   end
-  defp symbolize(tokens) when is_list(tokens) do # if not given as single string, Elixir will think it is binary
+
+  # if not given as single string, Elixir will think it is binary
+  defp symbolize(tokens) when is_list(tokens) do
     [x] = tokens
     symbolize(x)
   end
+
   defp symbolize(token) do
     cond do
       token == "add" ->
-	:+
+        :+
+
       token == "multiply" ->
-	:*
+        :*
+
+      token == "subtract" ->
+        :-
+
       true ->
-	to_number(token)
+        to_number(token)
     end
   end
 
@@ -99,29 +112,35 @@ defmodule SExprCalc.Calc do
 
   """
   def evaluate(program) when is_list(program) and length(program) == 3 do
-    [h|t] = program
+    [h | t] = program
     apply(Kernel, h, t)
   end
+
   def evaluate(program) when is_list(program) and length(program) > 2 do
     program =
       Enum.reduce_while(Enum.with_index(program), [], fn {x, i}, acc ->
-	if is_operator(x) and i < length(program) -2 do
-	  a = Enum.at(program, i+1)
-	  b = Enum.at(program, i+2)
-	  if is_number(a) and is_number(b) do
-	    lst = List.delete_at(program, i)
-	    |> List.delete_at(i)
-	    |> List.delete_at(i)
-	    |> List.insert_at(i, evaluate([x, a, b]))
-	    {:halt, acc ++ lst}
-	  else
-	    {:cont, acc}
-	  end
-	else
-	  {:cont, acc}
-	end
+        if is_operator(x) and i < length(program) - 2 do
+          a = Enum.at(program, i + 1)
+          b = Enum.at(program, i + 2)
+
+          if is_number(a) and is_number(b) do
+            lst =
+              List.delete_at(program, i)
+              |> List.delete_at(i)
+              |> List.delete_at(i)
+              |> List.insert_at(i, evaluate([x, a, b]))
+
+            {:halt, acc ++ lst}
+          else
+            {:cont, acc}
+          end
+        else
+          {:cont, acc}
+        end
       end)
+
     evaluate(program)
   end
+
   def evaluate(program), do: program
 end
