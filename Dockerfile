@@ -1,4 +1,4 @@
-FROM elixir:1.7
+FROM elixir:1.10
 
 RUN mkdir -p /s_expr_calc
 
