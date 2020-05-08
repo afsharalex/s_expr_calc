@@ -36,6 +36,15 @@ defmodule SExprCalc.CalcTest do
       assert result -- expected == []
     end
 
+    test "simple division s-expression" do
+      program = "(divide 4 2)"
+      expected = [:div, 4, 2]
+      result = Calc.parse(program)
+
+      assert expected -- result == []
+      assert result -- expected == []
+    end
+
     test "complex addition and multiplication s-expression" do
       program = "(add (add 1 1) (multiply 2 2))"
       expected = [:+, :+, 1, 1, :*, 2, 2]
@@ -85,6 +94,30 @@ defmodule SExprCalc.CalcTest do
       result = Calc.evaluate(program)
 
       assert expected == result
+    end
+
+    test "simple division" do
+      program = [:div, 4, 2]
+      expected = 2
+      result = Calc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "division with remainder" do
+      program = [:div, 5, 2]
+      expected = 2
+      result = Calc.evaluate(program)
+
+      assert expected == result
+    end
+
+    test "division by zero" do
+      program = [:div, 4, 0]
+
+      assert_raise ArithmeticError, fn ->
+        Calc.evaluate(program)
+      end
     end
 
     test "complex addition and multiplication" do

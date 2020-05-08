@@ -35,6 +35,10 @@ defmodule SExprCalc.Calc do
       :- ->
         true
 
+      # ':/' would return float so we use div to avoid that.
+      :div ->
+        true
+
       _ ->
         false
     end
@@ -75,6 +79,9 @@ defmodule SExprCalc.Calc do
 
       token == "subtract" ->
         :-
+
+      token == "divide" ->
+        :div
 
       true ->
         to_number(token)
