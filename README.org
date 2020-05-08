@@ -1,4 +1,23 @@
-#+S-expression calculator
+#+TITLE: S-expression calculator
+#+STARTUP: inlineimages nofold
+
+* Table of Contents :TOC_3:noexport:
+- [[#description][Description]]
+  - [[#notes][Notes]]
+    - [[#a-note-about-language-choice][A note about language choice]]
+    - [[#a-note-about-implementation][A note about implementation]]
+    - [[#building--running][Building & running]]
+  - [[#assignment][Assignment]]
+    - [[#expression-syntax][Expression syntax]]
+    - [[#expression-grammar][Expression grammar]]
+    - [[#expression-semantics][Expression semantics]]
+    - [[#examples][Examples]]
+    - [[#assumptions][Assumptions]]
+    - [[#evaluation-criteria][Evaluation Criteria]]
+    - [[#core-requirements][Core Requirements]]
+    - [[#impressing-us][Impressing Us]]
+- [[#license][License]]
+
 * Description
 This was a programming test for a job interview I had in 2018. Since then I have
 mostly let it collect dust, however I am going to try and keep it up to date and
