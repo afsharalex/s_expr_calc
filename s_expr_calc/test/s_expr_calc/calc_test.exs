@@ -27,6 +27,15 @@ defmodule SExprCalc.CalcTest do
       assert result -- expected == []
     end
 
+    test "mult alias for multiply" do
+      program = "(mult 2 3)"
+      expected = [:*, 2, 3]
+      result = Calc.parse(program)
+
+      assert expected -- result == []
+      assert result -- expected == []
+    end
+
     test "simple subtaction s-expression" do
       program = "(subtract 4 2)"
       expected = [:-, 4, 2]
@@ -36,8 +45,26 @@ defmodule SExprCalc.CalcTest do
       assert result -- expected == []
     end
 
+    test "sub alias for subtract" do
+      program = "(sub 4 2)"
+      expected = [:-, 4, 2]
+      result = Calc.parse(program)
+
+      assert expected -- result == []
+      assert result -- expected == []
+    end
+
     test "simple division s-expression" do
       program = "(divide 4 2)"
+      expected = [:div, 4, 2]
+      result = Calc.parse(program)
+
+      assert expected -- result == []
+      assert result -- expected == []
+    end
+
+    test "div alias for divide" do
+      program = "(div 4 2)"
       expected = [:div, 4, 2]
       result = Calc.parse(program)
 

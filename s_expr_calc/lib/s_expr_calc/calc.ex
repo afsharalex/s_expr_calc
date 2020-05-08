@@ -74,13 +74,13 @@ defmodule SExprCalc.Calc do
       token == "add" ->
         :+
 
-      token == "multiply" ->
+      token == "multiply" or token == "mult" ->
         :*
 
-      token == "subtract" ->
+      token == "subtract" or token == "sub" ->
         :-
 
-      token == "divide" ->
+      token == "divide" or token == "div" ->
         :div
 
       true ->
